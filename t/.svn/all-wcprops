@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/share/!svn/ver/4275/lang/perl/Config-Pit/trunk/t
+END
+98_perlcritic.t
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/share/!svn/ver/4202/lang/perl/Config-Pit/trunk/t/98_perlcritic.t
+END
+01_basic.t
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/share/!svn/ver/4243/lang/perl/Config-Pit/trunk/t/01_basic.t
+END
+97_podspell.t
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/share/!svn/ver/4275/lang/perl/Config-Pit/trunk/t/97_podspell.t
+END
+99_pod.t
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/share/!svn/ver/4202/lang/perl/Config-Pit/trunk/t/99_pod.t
+END
+perlcriticrc
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/share/!svn/ver/4202/lang/perl/Config-Pit/trunk/t/perlcriticrc
+END
+02_interoperability.t
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/share/!svn/ver/4229/lang/perl/Config-Pit/trunk/t/02_interoperability.t
+END
+00_compile.t
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/share/!svn/ver/4202/lang/perl/Config-Pit/trunk/t/00_compile.t
+END

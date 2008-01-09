@@ -1,0 +1,21 @@
+abstract: Manage settings
+author: cho45 <cho45@lowreal.net>
+build_requires: 
+  Test::More: 0
+distribution_type: module
+generated_by: Module::Install version 0.640
+license: perl
+name: Config-Pit
+no_index: 
+  directory: 
+    - inc
+    - t
+requires: 
+  File::HomeDir: 0
+  File::Spec: 0
+  File::Temp: 0.2
+  List::MoreUtils: 0
+  Path::Class: 0
+  YAML::Syck: 1
+  perl: 5.8.1
+version: 0.01

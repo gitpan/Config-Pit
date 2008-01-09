@@ -1,0 +1,45 @@
+K 26
+svn:wc:ra_dav:activity-url
+V 16
+/share/!svn/act/
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/share/!svn/ver/4280/lang/perl/Config-Pit/trunk
+END
+Rakefile
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/share/!svn/ver/4279/lang/perl/Config-Pit/trunk/Rakefile
+END
+Makefile.PL
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/share/!svn/ver/4228/lang/perl/Config-Pit/trunk/Makefile.PL
+END
+Changes
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/share/!svn/ver/4280/lang/perl/Config-Pit/trunk/Changes
+END
+MANIFEST.SKIP
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/share/!svn/ver/4267/lang/perl/Config-Pit/trunk/MANIFEST.SKIP
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/share/!svn/ver/4202/lang/perl/Config-Pit/trunk/README
+END
+.shipit
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/share/!svn/ver/4279/lang/perl/Config-Pit/trunk/.shipit
+END
