@@ -12,7 +12,9 @@ use Data::Dumper;
 sub p($) { warn Dumper shift }
 
 my $dir = File::Temp->newdir();
-$Config::Pit::directory = dir($dir->dirname);
+$Config::Pit::directory    = dir($dir->dirname);
+$Config::Pit::config_file  = $Config::Pit::directory->file("pit.yaml");
+$Config::Pit::verbose      = 0;
 
 my ($config, $p);
 

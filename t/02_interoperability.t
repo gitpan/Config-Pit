@@ -17,7 +17,9 @@ use Data::Dumper;
 sub p($) { warn Dumper shift }
 
 my $dir = File::Temp->newdir();
-$Config::Pit::directory = dir($dir->dirname);
+$Config::Pit::directory    = dir($dir->dirname);
+$Config::Pit::config_file  = $Config::Pit::directory->file("pit.yaml");
+$Config::Pit::verbose      = 0;
 
 my $config;
 
@@ -31,7 +33,7 @@ is($config->{foo}, "0100", "string like octal number (get returned value)");
 
 my $profile = $Config::Pit::directory->file("default.yaml");
 
-my $ruby_res = `ruby -ryaml -e 'print YAML.load_file(%($profile))["test"]["foo"]'`;
+my $ruby_res = `ruby -ryaml -e 'print YAML.load(File.read(%($profile)))["test"]["foo"]'`;
 is($ruby_res, "0100", "ruby yaml");
 
 1;

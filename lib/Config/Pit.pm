@@ -4,9 +4,11 @@ use strict;
 use 5.8.1;
 
 use base qw/Exporter/;
-our @EXPORT = qw/pit_get/;
+our @EXPORT = qw/pit_get pit_set pit_switch/;
 
-*pit_get = \&get;
+*pit_get    = \&get;
+*pit_set    = \&set;
+*pit_switch = \&switch;
 
 use YAML::Syck;
 use Path::Class;
@@ -15,17 +17,18 @@ use File::Spec;
 use File::Temp;
 use List::MoreUtils qw(all);
 
-our $VERSION      = '0.01';
+our $VERSION      = '0.02';
 our $directory    = dir(File::HomeDir->my_home, ".pit");
-our $config_file  = $directory->file("config.yaml");
+our $config_file  = $directory->file("pit.yaml");
 our $profile_file = undef;
+our $verbose      = 1;
 
 sub get {
 	my ($name, %opts) = @_;
 	my $profile = _load();
-	$YAML::Syck::ImplicitTyping = 1;
-	$YAML::Syck::SingleQuote    = 1;
-	
+	local $YAML::Syck::ImplicitTyping = 1;
+	local $YAML::Syck::SingleQuote    = 1;
+
 	if ($opts{require}) {
 		unless (all { defined $profile->{$name}->{$_} } keys %{$opts{require}}) {
 			# merge
@@ -39,8 +42,8 @@ sub get {
 sub set {
 	my ($name, %opts) = @_;
 	my $result = {};
-	$YAML::Syck::ImplicitTyping = 1;
-	$YAML::Syck::SingleQuote    = 1;
+	local $YAML::Syck::ImplicitTyping = 1;
+	local $YAML::Syck::SingleQuote    = 1;
 
 	if ($opts{data}) {
 		$result = $opts{data};
@@ -54,7 +57,7 @@ sub set {
 		my $t = file($f->filename)->stat->mtime;
 		system $ENV{EDITOR}, $f->filename;
 		if ($t == file($f->filename)->stat->mtime) {
-			warn "No changes.";
+			print STDERR "No changes." if $verbose;
 			$result = get($name);
 		} else {
 			$result = set($name, data => YAML::Syck::LoadFile($f->filename));
@@ -68,8 +71,8 @@ sub set {
 
 sub switch {
 	my ($name, %opts) = @_;
-	$YAML::Syck::ImplicitTyping = 1;
-	$YAML::Syck::SingleQuote    = 1;
+	local $YAML::Syck::ImplicitTyping = 1;
+	local $YAML::Syck::SingleQuote    = 1;
 
 	$name ||= "default";
 
@@ -79,14 +82,21 @@ sub switch {
 	my $ret = $config->{profile};
 	$config->{profile} = $name;
 	YAML::Syck::DumpFile($config_file, $config);
+	print STDERR "Config::Pit: Profile switch to $name from $ret.\n" if $verbose && ($name ne $ret);
 	return $ret;
 }
 
+sub pipe {
+	local $YAML::Syck::ImplicitTyping = 1;
+	local $YAML::Syck::SingleQuote    = 1;
+
+	-t STDOUT ? print STDERR 'do not output to tty.' :  print Dump(get(shift)), "\n"; ## no critic
+}
 
 sub _load {
 	my $config = _config();
-	$YAML::Syck::ImplicitTyping = 1;
-	$YAML::Syck::SingleQuote    = 1;
+	local $YAML::Syck::ImplicitTyping = 1;
+	local $YAML::Syck::SingleQuote    = 1;
 
 	switch($config->{profile});
 
@@ -97,8 +107,8 @@ sub _load {
 }
 
 sub _config {
-	$YAML::Syck::ImplicitTyping = 1;
-	$YAML::Syck::SingleQuote    = 1;
+	local $YAML::Syck::ImplicitTyping = 1;
+	local $YAML::Syck::SingleQuote    = 1;
 
 	(-e $directory) || $directory->mkpath(0, 0700);
 
@@ -132,16 +142,25 @@ Config::Pit - Manage settings
 =head1 DESCRIPTION
 
 Config::Pit is account setting management library.
+This library automates editing settings used in scripts.
+
 Original library is written in Ruby and published as pit gem with management command.
+
 You can install it by rubygems:
 
   $ sudo gem install pit
   $ pit set example.com
   # open setting of example.com with $EDITOR.
 
-=over
+And Config::Pit provides ppit command which is pit command written in Perl.
 
-=item Config::Pit::get(setting_name, opts)
+See:
+
+  $ ppit help
+
+=head1 FUNCTIONS
+
+=head2 Config::Pit::get(setting_name, opts)
 
 Get setting named C<setting_name> from current profile.
 
@@ -155,7 +174,9 @@ opts:
 
 =over
 
-=item require
+=item B<require>
+
+Specify fields you want as key and hint (description or default value) of the field as value.
 
   my $config = pit_get("example.com", require => {
     "username" => "your username on example.com",
@@ -167,7 +188,7 @@ If not exist, open the setting by $EDITOR with merged setting with current setti
 
 =back
 
-=item Config::Pit::set(setting_name, opts)
+=head2 Config::Pit::set(setting_name, opts)
 
 Set setting named C<setting_name> to current profile.
 
@@ -177,7 +198,7 @@ opts:
 
 =over
 
-=item data
+=item B<data>
 
   Config::Pit::set("example.com", data => {
     username => "foobar",
@@ -186,9 +207,7 @@ opts:
 
 When C<data> specified, will not open C<$EDITOR> and set the data directly.
 
-=over
-
-=item config
+=item B<config>
 
 
   Config::Pit::set("example.com", config => {
@@ -200,7 +219,7 @@ Open C<$EDITOR> with merged setting with specified config.
 
 =back
 
-=item Config::Pit::switch(profile_name);
+=head2 Config::Pit::switch(profile_name);
 
 Switch profile to C<profile_name>.
 
@@ -221,10 +240,6 @@ Profile is setting set:
   $ pit get foobar
   # foo bar...
 
-=back
-
-=back
-
 =head1 AUTHOR
 
 cho45 E<lt>cho45@lowreal.netE<gt>
@@ -237,5 +252,7 @@ it under the same terms as Perl itself.
 =head1 SEE ALSO
 
 L<http://lowreal.rubyforge.org/pit/> is pit in Ruby.
+
+F<bin/ppit> is pit command in Perl.
 
 =cut
