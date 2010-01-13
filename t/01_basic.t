@@ -56,25 +56,16 @@ $ENV{EDITOR} = "";
 Config::Pit::set("test");
 is(ref($config), "HASH", "set with unset EDITOR");
 
+my $suffix = $^O =~ /Win32/ ? '.bat' : '.pl'; 
 sub temppath {
-	return file(File::Temp->new()->filename)
+	return file(File::Temp->new()->filename . $suffix)
 }
 
 my $exe = temppath();
 my $tst = temppath();
 
 my $fh = $exe->open("w", 0700) or die "open failed.";
-print $fh <<'EOF';
-#!/usr/bin/env perl
-use strict;
-
-my $a =  do { local $/; <ARGV> };
-
-my $tst = $ENV{TEST_FILE};
-open my $fh, ">$tst";
-print $fh $a;
-close $fh;
-EOF
+print $fh file("t/editor/exe$suffix")->slurp;
 undef $fh;
 chmod 0700, $exe;
 
